@@ -1,0 +1,25 @@
+version = "1.0"
+
+[task]
+name = "kaushal-prajapati/archive-format-recovery"
+
+[metadata]
+author_name = "Kaushal Prajapati"
+author_email = "kaushalprajapati5296@gmail.com"
+category = "reverse-engineering"
+tags = ["binary-format", "reverse-engineering", "compression", "lz77", "filesystem", "hypothesis-driven-investigation"]
+difficulty = "hard"
+difficulty_explanation = "The archive format is undocumented and only an encoder binary is provided. Roughly twenty independent format details (biased big-endian varints, zigzag base time, root attributes in the header, XOR-coded modes, nanosecond flag, optional shared name table, optional LZ-compressed directory table, content sharing between identical files, block-structured LZ stream with raw blocks, two match encodings plus an extended length, a window that spans blocks, a footer checksum over header plus table) must each be found by crafting inputs for vpack and comparing outputs. The provided samples exercise only the easy subset."
+solution_explanation = "solution/unvpack.py is a hand-written decoder for format version 3: it validates the footer and its CRC over header plus table, decodes the optionally compressed table with its name table, decodes each data blob (stored or block LZ) and checks its CRC32, then recreates entries, applies modes, and sets mtimes bottom-up with lutimes semantics, finishing with OUTDIR itself."
+verification_explanation = "tests/data holds 68 archives that vpack wrote at authoring time from seeded trees covering every format feature, plus 48 damaged archives that a spec-correct decoder rejects. vpack is deleted before grading. Each valid archive is unpacked and the resulting tree (names, types, contents, link targets, permission bits, nanosecond mtimes, OUTDIR attributes) must equal the recorded manifest exactly; each damaged archive must give exit status 1 and 'corrupt' on stderr. Reward is 1 only if all 117 tests pass."
+
+[verifier]
+timeout_sec = 1200.0
+
+[agent]
+timeout_sec = 7200.0
+
+[environment]
+build_timeout_sec = 600.0
+cpus = 2
+memory_mb = 2048

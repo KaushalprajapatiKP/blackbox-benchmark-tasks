@@ -1,0 +1,27 @@
+version = "1.0"
+
+[task]
+name = "kaushal-prajapati/tabula-rebuild"
+description = "Clean-room rebuild of an execute-only CSV/TSV table processor, matched byte for byte on a large hidden suite."
+
+[metadata]
+author_name = "Kaushal Prajapati"
+author_email = "kaushalprajapati5296@gmail.com"
+category = "software-engineering"
+tags = ["reverse-engineering", "black-box", "cli", "csv", "clean-room", "exactness"]
+difficulty = "hard"
+difficulty_explanation = "Long-tail exactness under black-box discovery. The agent can only run an execute-only binary and read a man page that covers the common regime. About 750 hidden invocations across 13 categories must all match stdout, stderr and exit code byte for byte. Dozens of independent rules (option parsing quirks, numeric literal grammar with a 15 digit limit, exact decimal aggregates, avg rounding, numeric vs text comparison, unknown identifiers as literals, sort placement of non-numbers under reverse, natural sort tie rules, quoting triggers, pretty table width and alignment rules, control character rendering, truncation with wide characters, pipeline order, about 50 diagnostic messages with offsets and line numbers) are only discoverable by probing."
+solution_explanation = "A Python standard-library reimplementation written from probing: own option parser, RFC4180-style reader with line tracking, exact integer-scaled decimals, a tokenizer and recursive-descent parser for filter expressions, stable multi-key sort with numeric/natural/case-folded comparators, first-appearance grouping with eight aggregates, rounding modes, minimal/all/nonnumeric/none quoting, and a display-width table renderer."
+verification_explanation = "tests/cases.json holds invocations recorded from the original binary at authoring time. The verifier deletes the original binary and any byte copy of it, rejects ELF or shared-object files and binary copies in /app/rebuild, then runs each case through python3 -I -S with an audit hook that blocks process creation and ctypes, comparing stdout, stderr and exit code exactly. Reward is 1 only if every case matches; a per-category table is printed."
+
+[verifier]
+timeout_sec = 900.0
+
+[agent]
+timeout_sec = 7200.0
+
+[environment]
+build_timeout_sec = 600.0
+cpus = 2
+memory_mb = 2048
+storage_mb = 10240

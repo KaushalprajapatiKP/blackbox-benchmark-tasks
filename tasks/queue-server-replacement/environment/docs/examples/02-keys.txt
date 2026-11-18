@@ -1,0 +1,18 @@
+# '>' lines are sent by the client (each ends with LF),
+# '<' lines are received (each ends with CR LF).
+> SET greeting hello
+< :1
+> GET greeting
+< $5
+< hello
+> SET greeting world
+< :2
+> GETV greeting
+< *2
+< :2
+< $5
+< world
+> DEL greeting
+< :1
+> GET greeting
+< $-1

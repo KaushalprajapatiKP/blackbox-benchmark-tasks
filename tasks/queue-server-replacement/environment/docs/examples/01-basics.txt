@@ -1,0 +1,11 @@
+# '>' lines are sent by the client (each ends with LF),
+# '<' lines are received (each ends with CR LF).
+> PING
+< +PONG
+> ECHO hello
+< $5
+< hello
+> TIME
+< :0
+> WHOAMI
+< +id=1 ns=default

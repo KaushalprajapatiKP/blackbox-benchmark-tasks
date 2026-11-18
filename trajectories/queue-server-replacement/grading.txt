@@ -1,0 +1,28 @@
+reward: 1
+
+scrub: removed 0 copies
+...                                                                      [100%]
+==================================== PASSES ====================================
+____________________________ test_recorded_sessions ____________________________
+----------------------------- Captured stdout call -----------------------------
+category        pass total
+lexer             30    30
+commands          32    32
+numeric           32    32
+kv                32    32
+ttl               32    32
+queue-basic       32    32
+queue-order       32    32
+visibility        32    32
+multi-conn        32    32
+transactions      32    32
+namespaces        32    32
+pipelining        32    32
+info              32    32
+limits            32    32
+ALL              446   446
+=========================== short test summary info ============================
+PASSED test_replay.py::test_original_binary_absent
+PASSED test_replay.py::test_replacement_exists
+PASSED test_replay.py::test_recorded_sessions
+3 passed in 59.43s

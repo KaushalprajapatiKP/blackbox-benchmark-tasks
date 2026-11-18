@@ -1,0 +1,25 @@
+version = "1.0"
+
+[task]
+name = "kaushal-prajapati/queue-server-replacement"
+
+[metadata]
+author_name = "Kaushal Prajapati"
+author_email = "kaushalprajapati5296@gmail.com"
+category = "reverse-engineering"
+tags = ["black-box", "protocol", "stateful", "network-server", "python", "behaviour-inference"]
+difficulty = "hard"
+difficulty_explanation = "The only complete truth is a stripped binary that speaks a 36-command line protocol. Dozens of independent behaviours (lexer quoting and escapes, numeric parsing limits, about 30 error codes with exact messages, option rules, logical-clock expiry ordering, visibility timeouts that count as failures, dead-lettering, blocking reserves served in wait order, connection-close job release, transaction queue-time vs run-time errors, namespaces, limits, INFO and QSTAT layouts) must be discovered by probing, and a single wrong byte in any of several hundred hidden sessions fails the task."
+solution_explanation = "A single-threaded selectors-based Python server that mirrors the binary: a lexer with the same quote, escape and control-byte rules, per-command arity and option parsing in the same check order, a job store ordered by priority then a global ready sequence, a TICK handler that expires keys then processes due delayed jobs and visibility timeouts in (due time, id) order before serving and then timing out blocked waiters, MULTI with queue-time arity/unknown errors versus run-time error elements, and connection close that releases reserved jobs."
+verification_explanation = "test.sh deletes /app/bin/qsrv and any file with the same SHA-256, then replays 446 sessions recorded from the binary at authoring time against a fresh replacement process per session, run under an audit hook that blocks process creation, ctypes and foreign native modules. Every byte and every connection close on every connection must match; a per-category table is printed. Reward is 1 only if all sessions pass."
+
+[verifier]
+timeout_sec = 1800.0
+
+[agent]
+timeout_sec = 7200.0
+
+[environment]
+build_timeout_sec = 900.0
+cpus = 2
+memory_mb = 2048

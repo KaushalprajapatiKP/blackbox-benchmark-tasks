@@ -1,0 +1,62 @@
+reward: 0
+
+..F                                                                      [100%]
+=================================== FAILURES ===================================
+_____________________________ test_all_cases_match _____________________________
+
+original_removed = ['/app/bin/tabula', '/solution/app.tar']
+
+    def test_all_cases_match(original_removed):
+        assert not os.path.exists(ORIGINAL)
+        per_cat = {}
+        failures = []
+        for cs in CASES:
+            got = _run_case(cs)
+            exp = (_b(cs["stdout"]), _b(cs["stderr"]), cs["code"])
+            ok = got == exp
+            tally = per_cat.setdefault(cs["cat"], [0, 0])
+            tally[1] += 1
+            if ok:
+                tally[0] += 1
+            else:
+                failures.append(cs["id"])
+        lines = ["", "%-10s %8s %8s" % ("category", "passed", "total")]
+        for cat, (ok, tot) in per_cat.items():
+            lines.append("%-10s %8d %8d" % (cat, ok, tot))
+        passed = sum(v[0] for v in per_cat.values())
+        lines.append("%-10s %8d %8d" % ("TOTAL", passed, len(CASES)))
+        print("\n".join(lines))
+        with open("/logs/verifier/categories.txt", "w") as fh:
+            fh.write("\n".join(lines) + "\n")
+>       assert not failures, "%d of %d cases differ (first few: %s)" % (
+            len(failures), len(CASES), failures[:10])
+E       AssertionError: 4 of 749 cases differ (first few: ['cli-052', 'group-085', 'quote-025', 'quote-026'])
+E       assert not ['cli-052', 'group-085', 'quote-025', 'quote-026']
+
+test_outputs.py:144: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+
+removed original binary copies: ['/app/bin/tabula', '/solution/app.tar']
+----------------------------- Captured stdout call -----------------------------
+
+category     passed    total
+cli              71       72
+parse            52       52
+header           33       33
+select           51       51
+where           102      102
+where_err        60       60
+sort             63       63
+group            95       96
+numfmt           48       48
+quote            37       39
+pretty           44       44
+pipeline         29       29
+mixed            60       60
+TOTAL           745      749
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED test_outputs.py::test_rebuild_present
+PASSED test_outputs.py::test_rebuild_has_no_native_code_or_binary_copy
+FAILED test_outputs.py::test_all_cases_match - AssertionError: 4 of 749 cases...
+1 failed, 2 passed in 47.95s

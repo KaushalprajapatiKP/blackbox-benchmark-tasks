@@ -1,0 +1,18 @@
+# '>' lines are sent by the client (each ends with LF),
+# '<' lines are received (each ends with CR LF).
+> PUSH jobs "send email"
+< :1
+> PUSH jobs report
+< :2
+> RESERVE jobs
+< *3
+< :1
+< :1
+< $10
+< send email
+> ACK 1
+< :1
+> TICK 5
+< :5
+> TIME
+< :5
