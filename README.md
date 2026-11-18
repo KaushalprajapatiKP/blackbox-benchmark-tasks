@@ -11,6 +11,17 @@ grading.
 
 Author: Kaushal Prajapati (kaushalprajapati5296@gmail.com). Tools used: see [TOOLS.md](TOOLS.md).
 
+## Documents
+
+| File | Contents |
+|---|---|
+| [FAILURE_STUDY.md](FAILURE_STUDY.md) | Eight failed or flawed attempts grouped into five failure categories, which are capability gaps vs task defects, and what the sample cannot show |
+| [DIFFICULTY.md](DIFFICULTY.md) | How I would check difficulty with many runs |
+| [LEAKAGE.md](LEAKAGE.md) | Ways to pass without solving, the check that guards against it, and what the tasks do not measure |
+| [REVIEW_FEEDBACK.md](REVIEW_FEEDBACK.md) | Written feedback to a junior researcher on the "sort plus 'sorted' grader" task |
+| [PROCESS_100.md](PROCESS_100.md) | One-page process for producing 100 tasks at steady quality |
+| [TOOLS.md](TOOLS.md) | Tools used |
+
 ## Tasks
 
 | Task | What the agent must build | Hidden suite | Docs-only baseline |
@@ -72,16 +83,17 @@ tasks/<task>/
 - **Fairness.** Every graded behaviour is observable by running the provided program. Visible
   examples cover only the easy regime, and the instruction states the output contract,
   tolerances and grading mechanics.
-- **Anti-cheat.** The original binary and any copy of it (found by hash) are deleted before
-  grading; replacements run under an audit hook that blocks process creation and native code.
-  Proxying, hardcoding and docs-only shortcuts all score 0.
+- **Anti-cheat.** The original binary is deleted before grading. For the two rebuild tasks
+  every copy of it (found by hash) is deleted too, and the replacement runs under an audit hook
+  that blocks process creation and native code. Proxying, hardcoding and docs-only shortcuts
+  all score 0. See [LEAKAGE.md](LEAKAGE.md).
 - **What these tasks do not measure:** code quality, performance beyond the stated limits,
   and collaboration over multiple turns.
 
 ## Known limitations
 
 - Validation ran on arm64 (Docker on Apple silicon).
-- Some verifiers share the agent's container so the binary can be removed in place; an agent
+- The verifiers share the agent's container so the binary can be removed in place; an agent
   with root could in principle tamper with the interpreter that runs the tests.
 - The hidden suites are in this public repository, so these copies should not be used to score
   models that may have been trained on them.
